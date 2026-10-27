@@ -1,0 +1,61 @@
+{
+  "name": "央视频专属接口源",
+  "version": "2026.10.27",
+  "updated_at": "2026-10-27 08:20:47+0800",
+  "generator": "scripts/update_source.py",
+  "channel_count": 63,
+  "groups": [
+    {
+      "type_id": "cctv",
+      "type_name": "央视",
+      "count": 21
+    },
+    {
+      "type_id": "jc",
+      "type_name": "央视剧场",
+      "count": 3
+    },
+    {
+      "type_id": "cgtn",
+      "type_name": "CGTN",
+      "count": 6
+    },
+    {
+      "type_id": "ws",
+      "type_name": "卫视",
+      "count": 31
+    },
+    {
+      "type_id": "other",
+      "type_name": "其他",
+      "count": 2
+    }
+  ],
+  "source": {
+    "file": "ysp-fongmi.py",
+    "sha256": "a627097eaeb631bf20bffb01e2dc46da2048f8889f136c028dbe08cd4abae540",
+    "channel_count": 63,
+    "raw": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py"
+  },
+  "sites": [
+    {
+      "key": "ysp",
+      "name": "央视频",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "ext": {
+        "port": 8899
+      }
+    }
+  ],
+  "lives": [
+    {
+      "name": "央视频直播",
+      "api": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py",
+      "url": "ysp://all",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+    }
+  ]
+}
