@@ -1,7 +1,7 @@
 {
   "name": "央视频专属接口源",
   "version": "2026.10.27",
-  "updated_at": "2026-10-27 08:20:47+0800",
+  "updated_at": "2026-10-27 12:24:15+0800",
   "generator": "scripts/update_source.py",
   "channel_count": 63,
   "groups": [
@@ -35,14 +35,14 @@
     "file": "ysp-fongmi.py",
     "sha256": "a627097eaeb631bf20bffb01e2dc46da2048f8889f136c028dbe08cd4abae540",
     "channel_count": 63,
-    "raw": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py"
+    "raw": "https://raw.githubusercontent.com/Tomy898/ysp-cctv-source/main/ysp-fongmi.py"
   },
   "sites": [
     {
       "key": "ysp",
       "name": "央视频",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py",
+      "api": "https://raw.githubusercontent.com/Tomy898/ysp-cctv-source/main/ysp-fongmi.py",
       "searchable": 1,
       "quickSearch": 1,
       "ext": {
@@ -53,7 +53,7 @@
   "lives": [
     {
       "name": "央视频直播",
-      "api": "https://raw.githubusercontent.com/YOUR_GITHUB_NAME/ysp-cctv-source/main/ysp-fongmi.py",
+      "api": "https://raw.githubusercontent.com/Tomy898/ysp-cctv-source/main/ysp-fongmi.py",
       "url": "ysp://all",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
     }
