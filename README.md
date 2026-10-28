@@ -15,8 +15,9 @@
 ysp-cctv-source/
 ├─ ysp-fongmi.py                     # 插件本体（改造完成，可直接被 FongMi 加载）
 ├─ ysp.json                          # 可订阅的源索引（由脚本生成，每天自动重写）
+├─ ysp-cctv.m3u                      # 「央视频」直连清单（18 路央视，由脚本生成）
 ├─ scripts/
-│  └─ update_source.py               # 每日刷新脚本：体检插件 + 重写 ysp.json
+│  └─ update_source.py               # 每日刷新脚本：体检插件 + 重写源索引与直连清单
 ├─ .github/workflows/
 │  └─ update-source.yml              # GitHub Actions：每天 06:00 自动刷新并提交
 ├─ .gitignore
@@ -25,7 +26,8 @@ ysp-cctv-source/
 
 - 插件**只依赖 Python 标准库**，不需要 pip 安装任何包。
 - 刷新脚本同样只用标准库。
-- 插件本身**每天不改**（保持稳定，避免无意义提交）；每天变的只有 `ysp.json`。
+- 插件本身**每天不改**（保持稳定，避免无意义提交）；每天变的只有 `ysp.json`
+  （`ysp-cctv.m3u` 内容固定，不会天天产生提交）。
 
 ---
 
@@ -79,6 +81,9 @@ https://raw.githubusercontent.com/<你的用户名>/ysp-cctv-source/main/ysp.jso
 }
 ```
 
+> 另外 `lives` 里还有一条名称为 **「央视频」** 的源，指向同仓库的 `ysp-cctv.m3u`（18 路央视直连地址）。
+> 整份导入 `ysp.json` 时会一并带进去；也可单独添加，见下文「新增的『央视频』直连源」。
+
 **B. 点播站点（分类 / 搜索 / 播放）**
 对应 `ysp.json` 里的 `sites` 段：
 
@@ -93,6 +98,23 @@ https://raw.githubusercontent.com/<你的用户名>/ysp-cctv-source/main/ysp.jso
 > `ysp.json` 里的 `ua`、`api` 都是刷新脚本自动写好的，直接抄即可。
 
 ---
+
+## 新增的「央视频」直连源
+
+源索引的 `lives` 里除原有的「央视频直播」（插件源）外，多了一条名称为 **「央视频」** 的源，
+它指向同仓库的 `ysp-cctv.m3u`，里面是 18 路央视的直连地址（CCTV1~CCTV17 与 CCTV5+）：
+
+```
+http://dl.qsaiv.cn:122/ysp.php?id=cctv1   # CCTV1
+http://dl.qsaiv.cn:122/ysp.php?id=cctv2   # CCTV2
+...
+```
+
+- 这条源与插件源**互不影响**，原来指向 `ysp-fongmi.py` 的条目保持原样。
+- 切换清晰度、分类、搜索这些还是走插件源；这条只提供一条"打开就能播"的直连通道。
+- `dl.qsaiv.cn:122` 是第三方跳转服务（不是央视官方接口），每次请求现场生成一个带时移
+  窗口的 m3u8，链接本身有寿命；长期可用性取决于该服务，哪天停用这条源就会失效。
+- 清单文件由 `scripts/update_source.py` 生成，频道表不变时内容不变，不会产生多余提交。
 
 ## 每天 06:00 自动更新是怎么实现的
 

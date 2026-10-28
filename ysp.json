@@ -1,7 +1,7 @@
 {
   "name": "央视频专属接口源",
   "version": "2026.10.28",
-  "updated_at": "2026-10-28 09:02:25+0800",
+  "updated_at": "2026-10-28 16:20:55+0800",
   "generator": "scripts/update_source.py",
   "channel_count": 63,
   "groups": [
@@ -55,6 +55,12 @@
       "name": "央视频直播",
       "api": "https://raw.githubusercontent.com/Tomy898/ysp-cctv-source/main/ysp-fongmi.py",
       "url": "ysp://all",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+    },
+    {
+      "name": "央视频",
+      "type": 0,
+      "url": "https://raw.githubusercontent.com/Tomy898/ysp-cctv-source/main/ysp-cctv.m3u",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
     }
   ]
