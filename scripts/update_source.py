@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """央视频专属接口源 · 每日刷新脚本
 
-由 .github/workflows/update-source.yml 每天 06:00（北京时间）调用，做两件事：
+由 .github/workflows/update-source.yml 每天 06:00（北京时间）调用，做三件事：
 
 1. 静态体检 ysp-fongmi.py（不联网、不启动本地 HLS 代理）：
    - 语法可解析；
@@ -15,6 +15,10 @@
    版本号、更新时间、频道总数、分组统计、脚本指纹（sha256）以及订阅用的 raw 地址。
    仓库地址优先取 --repo，其次 GITHUB_REPOSITORY，再次 git remote origin，
    都没有时沿用已有 ysp.json 里的地址，最后才落到占位符。
+
+3. 另外固定输出一份「央视频」直连清单 ysp-cctv.m3u（18 路央视），并在源索引的
+   lives 里追加一条名称为「央视频」的源指向它。清单内容不含时间戳，频道表不变
+   时内容也不变，因此日常刷新不会为它产生多余提交。
 
 只依赖 Python 标准库，不需要第三方包。
 
@@ -53,6 +57,34 @@ REQUIRED_METHODS = [
 ]
 
 PLACEHOLDER_REPO = "YOUR_GITHUB_NAME/ysp-cctv-source"
+
+# 额外并入的「央视频」直连源。
+# 这批地址是第三方跳转服务，每次请求现场生成一个带时移窗口的 m3u8。
+# 它与插件自带的「央视频直播」并存、互不影响 —— 所谓「源接口不变」，
+# 指的就是原来那条指向 ysp-fongmi.py 的条目保持原样不动。
+EXTRA_LIVE_NAME = "央视频"
+EXTRA_PLAYLIST = "ysp-cctv.m3u"
+EXTRA_URL = "http://dl.qsaiv.cn:122/ysp.php?id=%s"
+EXTRA_CHANNELS = [
+    ("CCTV1", "cctv1"),
+    ("CCTV2", "cctv2"),
+    ("CCTV3", "cctv3"),
+    ("CCTV4", "cctv4"),
+    ("CCTV5", "cctv5"),
+    ("CCTV5+", "cctv5+"),
+    ("CCTV6", "cctv6"),
+    ("CCTV7", "cctv7"),
+    ("CCTV8", "cctv8"),
+    ("CCTV9", "cctv9"),
+    ("CCTV10", "cctv10"),
+    ("CCTV11", "cctv11"),
+    ("CCTV12", "cctv12"),
+    ("CCTV13", "cctv13"),
+    ("CCTV14", "cctv14"),
+    ("CCTV15", "cctv15"),
+    ("CCTV16", "cctv16"),
+    ("CCTV17", "cctv17"),
+]
 
 def _tz():
     """北京时间：优先用系统时区库，取不到就退回固定 UTC+8。"""
@@ -191,6 +223,15 @@ def repo_from_existing_json(path):
     return ""
 
 
+def build_m3u():
+    """组装「央视频」直连清单。内容固定、不含时间戳，便于做幂等比较。"""
+    lines = ["#EXTM3U"]
+    for name, cid in EXTRA_CHANNELS:
+        lines.append('#EXTINF:-1 tvg-name="%s",%s' % (name, name))
+        lines.append(EXTRA_URL % cid)
+    return "\n".join(lines) + "\n"
+
+
 def build_payload(mod, groups, repo, ref, port):
     """组装可订阅的源索引。sites / lives 字段沿用脚本自带用法，不做格式改造。"""
     tz = _tz()
@@ -223,7 +264,13 @@ def build_payload(mod, groups, repo, ref, port):
                 "api": raw_py,
                 "url": "ysp://all",
                 "ua": ua,
-            }
+            },
+            {
+                "name": EXTRA_LIVE_NAME,
+                "type": 0,
+                "url": "%s/%s" % (raw_base, EXTRA_PLAYLIST),
+                "ua": ua,
+            },
         ],
     }
     return payload
@@ -290,8 +337,17 @@ def main(argv=None):
     if changed:
         out.write_text(text_out, encoding="utf-8", newline="\n")
 
+    m3u_path = out.parent / EXTRA_PLAYLIST
+    m3u_text = build_m3u()
+    m3u_old = m3u_path.read_text(encoding="utf-8") if m3u_path.is_file() else ""
+    m3u_changed = m3u_old.strip() != m3u_text.strip()
+    if m3u_changed:
+        m3u_path.write_text(m3u_text, encoding="utf-8", newline="\n")
+
     print("接口源 %s: %s" % (out.name, "已更新" if changed else "无变化"))
+    print("  直连清单: %s: %s" % (m3u_path.name, "已更新" if m3u_changed else "无变化"))
     print("  订阅地址: %s" % payload["sites"][0]["api"])
+    print("  直连源  : %s -> %s" % (EXTRA_LIVE_NAME, payload["lives"][1]["url"]))
     print("  频道数  : %d（%s）" % (len(channels),
                                     " / ".join("%s %d" % (g["type_name"], g["count"]) for g in groups)))
     print("  更新时间: %s" % ordered["updated_at"])
