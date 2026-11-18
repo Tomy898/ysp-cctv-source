@@ -1,7 +1,7 @@
 {
   "name": "央视频专属接口源",
-  "version": "2026.11.17",
-  "updated_at": "2026-11-17 12:22:19+0800",
+  "version": "2026.11.18",
+  "updated_at": "2026-11-18 11:25:29+0800",
   "generator": "scripts/update_source.py",
   "channel_count": 63,
   "groups": [
